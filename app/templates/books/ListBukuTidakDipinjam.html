@@ -1,0 +1,137 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <title>Library</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles.css')}}" /> -->
+    <script>
+      function idName(value){
+        text = value.split(" | ");
+        $("#idUser").val(text[0]);
+        $("#namaUser").val(text[1]);
+      }
+      function hitungTanggal(){
+        var now = new Date();
+        var tgl = document.getElementById("tanggal").value;
+        now = now.toDateString("yyyy-mm-dd");
+        now = now.split(" ");
+        tgl = tgl.split("-");
+        now = parseInt(now[2]);
+        tgl = parseInt(tgl[2]);
+        var hasil = tgl - now;
+        document.getElementById("lama").value = hasil;
+      }
+  </script>
+</head>  
+<body>
+{% extends 'awal/Awal.html'%}
+
+{% block content %}
+<form name="searchForm" method="post" action='{{url_for("book_bp.searchAvailableBook")}}'>
+    <table id="table-inputSearch">
+      <tr><td>No Buku : </td><td><input type="text" name="noBuku" id="id"></td></tr>
+      <tr><td>Judul Buku : </td><td><input type="text" name="judulBuku" id="jdl"></td></tr>
+      <tr><td>Penulis Buku : </td><td><input type="text" name="penulis" id="pnls"></td></tr>
+      <tr>
+        <td><input class="btn-search" type="submit" value="Search"></td>
+      </tr>
+    </table>   
+  </form>
+  <table id="table-list" border=5>  
+      <thead>  
+          <td>No Buku</td>  
+          <td>Judul Buku</td>
+          <td>Penulis</td>
+          <td>Option</td>
+      </thead> 
+  
+      {% for row in datas %}
+          <script>
+            
+          </script>
+          <tr>  
+              <td>{{row.no_buku}}</td>  
+              <td>{{row.nama_buku}}</td>
+              <td>{{row.penulis_buku}}</td>
+              <td><button class="btn-addFile" data-toggle="modal" data-target="#modalPinjam{{row.no_buku}}">Pinjam</button></td>
+              <!-- <td><a class="link" href='{{url_for("trans_bp.rentBook", uid = row.no_buku)}}'>Pinjam</a></td> -->
+          </tr>
+          <div id="modalPinjam{{row.no_buku}}" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title text-xs-center">Form Pinjam</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" method="POST" action='{{url_for("trans_bp.rentBook", uid = row.no_buku)}}'>
+                            <div class="form-group">
+                            <label class="control-label">User</label>
+                            <div>
+                              <select class="form-control" name="data" method="GET" onchange="idName(this.value)">
+                                {% for data2 in datas2%}
+                                    <option value="{{data2.id_user}} | {{data2.nama_user}}" selected>{{data2.id_user}} | {{data2.nama_user}}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label">ID User</label>
+                              <div>
+                                  <input type="text" class="form-control input-lg" name="idUser" id="idUser" readonly>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label">Nama User</label>
+                              <div>
+                                  <input type="text" class="form-control input-lg" name="namaPeminjam" id="namaUser" readonly>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">ID Buku</label>
+                                <div>
+                                    <input type="text" class="form-control input-lg" name="noBuku" value="{{row.no_buku}}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Judul Buku</label>
+                                <div>
+                                    <input type="text" class="form-control input-lg" name="judulBuku" value="{{row.nama_buku}}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label">Penulis Buku</label>
+                              <div>
+                                  <input type="text" class="form-control input-lg" name="penulis" value="{{row.penulis_buku}}" readonly>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label">Lama Meminjam</label>
+                              <div>
+                                  <input type="text" class="form-control input-lg" name="lama" id="lama" readonly>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label">Tanggal Pengembalian</label>
+                              <div>
+                                  <input class="form-control input-lg" <input type="date" name="tanggalPengembalian" id="tanggal" onchange="hitungTanggal()" required>
+                              </div>
+                            </div>  
+                          </div>
+                            <div class="form-group">
+                                <div>
+                                    <button type="submit" class="btn btn-info btn-block">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+          </div><!-- /.modal -->    
+      {% endfor %}
+  
+  </table>  
+  <br><br> 
+{% endblock %}
+</body>
+</html>

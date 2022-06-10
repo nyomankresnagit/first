@@ -1,0 +1,74 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <title>Library</title>
+    <!-- <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles.css')}}" /> -->
+</head>  
+<body>
+{% extends 'awal/Awal.html'%}
+{% block content %}
+<h2>Informasi Buku Terpinjam</h2>
+<form name="searchFormTrans" method="post" action='{{url_for("trans_bp.searchTransByName")}}'>
+    <table id="table-inputSearch">
+      <tr><td>ID User : </td><td><input type="text" name="userId" id="id"></td></tr>
+      <tr><td>Nama User : </td><td><input type="text" name="userName" id="jdl"></td></tr>
+      <tr>
+        <td><input class="btn-search" type="submit" value="Search"></td>
+      </tr>
+    </table>   
+  </form>
+<tr>
+    <td>
+        <button class="btn-search" onclick="window.location.href='/export'">Export To Excel</button>
+    </td>
+</tr>
+<br><br>
+<table id="table-list" border=5>  
+<thead>  
+    <td>Nama Peminjam</td>  
+    <td>Nomor Buku</td>
+    <td>Judul Buku</td>
+    <td>Penulis</td>
+    <td>Lama Meminjam</td>
+    <td>Tanggal Pengembalian</td>
+    <td>Created Date</td>
+    <td>Updated Date</td>
+    <td>Sudah Dikembalikan?</td>
+</thead> 
+
+{% for row in datas %}
+    <tr>  
+        <td>{{row.nama_user}}</td>  
+        <td>{{row.no_buku}}</td>
+        <td>{{row.nama_buku}}</td>
+        <td>{{row.penulis_buku}}</td>
+        <td>{{row.lama}}</td>
+        <td>{{row.tanggal_pengembalian}}</td>
+        <td>{{row.created_date}}</td>
+        <td>{{row.updated_date}}</td>
+        <td>
+            <input type="checkbox" name="flag" id="flag{{row.id_trans}}">
+        </td>
+        <td>
+            <form method="post" onsubmit="return checkForm();" action='{{url_for("trans_bp.saveDataPeminjam", uidTrans=row.id_trans, uidBuku=row.no_buku)}}'>
+                <input type="submit" value="Simpan" class="btn-addFile btn-checking" id="btn">
+            </form>
+        </td>
+        <script>
+            function checkForm(){
+                if(document.getElementById("flag{{row.id_trans}}").checked){
+                    return true;
+                } else {
+                    alert("Silahkan Centang terlebih dahulu!!");
+                    return false;
+                }
+            }
+        </script>
+    </tr>
+{% endfor %}
+
+</table>  
+<br><br>
+{% endblock %}
+</body>
+</html>

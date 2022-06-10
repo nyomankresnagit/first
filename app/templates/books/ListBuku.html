@@ -1,0 +1,173 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <title>Library</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+    <!-- <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles.css')}}" /> -->
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
+    <script text='text/javascript'>
+      function showModalAdd(){
+        $("#modal-add").modal('show');
+      }
+    </script>
+</head>  
+<body>
+{% extends 'awal/Awal.html'%}
+
+{% block content %}
+<form name="searchForm" method="post" action='{{url_for("book_bp.searchBook")}}'>
+    <table id="table-inputSearch">
+      <tr><td>No Buku : </td><td><input type="text" name="noBuku" id="id"></td></tr>
+      <tr><td>Judul Buku : </td><td><input type="text" name="judulBuku" id="jdl"></td></tr>
+      <tr><td>Penulis Buku : </td><td><input type="text" name="penulis" id="pnls"></td></tr>
+      <tr>
+        <td><input class="btn-search" type="submit" value="Search"></td>
+      </tr>
+    </table>   
+</form>
+  <table>
+    <tr>
+      <td>
+        <td><button class="btn-addFile" data-toggle="modal" data-target="#modalAdd">Add</button></td>
+        <td><button class="btn-addFile" data-toggle="modal" data-target="#modalImport">Add With File</button></td>
+        <td><button class="btn-addFile" onclick="window.location.href='{{url_for("book_bp.downloadTemplate")}}'">Download Template</button></td>
+      </td>
+    </tr>
+  </table>
+  
+  <table id="table-list" border=5>  
+      <thead>  
+          <td>No Buku</td>  
+          <td>Judul Buku</td>
+          <td>Penulis</td>
+          <td>Created Date</td>
+          <td>Updated Date</td>
+          <td>Edit</td>
+          <td>Delete</td>
+      </thead> 
+  
+      {% for row in datas %}
+          <tr>  
+              <td id="noBuku">{{row.no_buku}}</td>  
+              <td id="namaBuku">{{row.nama_buku}}</td>
+              <td id="penulisBuku">{{row.penulis_buku}}</td>
+              <td id="createdDate">{{row.created_date}}</td>
+              <td id="updatedDate">{{row.updated_date}}</td>
+              <!-- <td><button id="btn-edit" class="bookEdit btn-add" data-id='{{row.no_buku}}'>Edit</button></td> -->
+              <td><button id="btn-edit" class="btn-addFile" data-toggle="modal" data-target="#editBook{{row.no_buku}}">Edit</button></td>
+              <!-- <td><a class="link" href='{{url_for("book_bp.editBook", uid = row.no_buku)}}'>Edit</a></td> -->
+              <td><a class="link" href='{{url_for("book_bp.deleteBook", uid = row.no_buku)}}' onclick="confirm('Are you sure to Delete Data ?')">Delete</a></td>
+              
+
+              <!-- Modal Edit -->
+              <div id="editBook{{row.no_buku}}" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-xs-center">Edit Book</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form" method="POST" action='{{url_for("book_bp.editBook", uid=row.no_buku)}}'>
+                                <div class="form-group">
+                                    <label class="control-label">ID Buku</label>
+                                    <div>
+                                        <input type="text" class="form-control input-lg" name="noBuku" value="{{row.no_buku}}" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Judul Buku</label>
+                                    <div>
+                                        <input type="text" class="form-control input-lg" name="judulBuku" value="{{row.nama_buku}}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                  <label class="control-label">Penulis Buku</label>
+                                  <div>
+                                      <input type="text" class="form-control input-lg" name="penulis" value="{{row.penulis_buku}}">
+                                  </div>
+                              </div>
+                                <div class="form-group">
+                                    <div>
+                                        <button type="submit" class="btn btn-info btn-block">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+              </div><!-- /.modal -->
+      {% endfor %}
+  
+  </table>  
+  <br><br>
+
+  <!-- Modal ADD -->
+  <div id="modalAdd" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-xs-center">Edit User</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" method="POST" action='{{url_for("book_bp.saveAddBook")}}'>
+                    <div class="form-group">
+                        <label class="control-label">Judul Buku</label>
+                        <div>
+                            <input type="text" class="form-control input-lg" name="judulBuku">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label">Penulis Buku</label>
+                      <div>
+                          <input type="text" class="form-control input-lg" name="penulis">
+                      </div>
+                  </div>
+                    <div class="form-group">
+                        <div>
+                            <button type="submit" class="btn btn-info btn-block">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <!-- Modal Import -->
+  <div id="modalImport" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-xs-center">Import Data</h4>
+            </div>
+            <div class="modal-body">
+              <form method="post" action='{{url_for("book_bp.importFile")}}' enctype=multipart/form-data>
+                <div class="form-group">
+                  <label>Input File (XLSX Only)</label>
+                  <input type=file class="form-control-file" name=file>
+                  <br><br>
+                  <input type=submit value=Upload>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+{% endblock%}
+</body>
+
+</html>
